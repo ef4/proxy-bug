@@ -1,18 +1,16 @@
-var app = require('express')();
+var server = require('http').createServer();
+var form = "<form action=\"/sample\" method=\"POST\"><input type=\"text\" name=\"msg\"></form>";
 
-app.use('/sample/destination', function(req, res) {
-  res.send("Destination");
-});
-
-app.use('/sample', function(req, res) {
+server.on('request', function(req, res) {
   if (req.method === 'POST') {
-    setTimeout(function(){
-      res.redirect("/sample/destination");
-    }, 100);
+    console.log("heard POST, deliberately stalling.");
   } else {
-    res.send("<form action=\"/sample\" method=\"POST\"><input type=\"text\" name=\"msg\"></form>");
+    res.writeHead(200, {
+      'Content-Length': form.length,
+      'Content-Type': 'text/html' });
+    res.write(form);
+    res.end();
   }
 });
 
-
-app.listen(8286);
+server.listen(8286);
